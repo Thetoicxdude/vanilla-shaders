@@ -35,7 +35,28 @@ out vec4 position2;
 out vec4 position3;
 
 void main() {
-    gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
+    vec3 animatedPosition = Position;
+
+    // Calculate breathing effect for idle state
+    float breathOffset = sin(Time * 2.0) * 0.05; // Adjust frequency and amplitude as needed
+
+    // Calculate bobbing effect for movement
+    float moveOffsetY = sin(Time * 4.0) * 0.1; // Vertical bobbing
+    float moveOffsetX = cos(Time * 2.0) * 0.05; // Horizontal sway
+
+    // Determine if the entity is moving or idle
+    bool isMoving = length(Position) > 0.1; // Example condition, adjust as needed
+
+    // Apply the appropriate offset
+    if (isMoving) {
+        animatedPosition.x += moveOffsetX;
+        animatedPosition.y += moveOffsetY;
+    } else {
+        animatedPosition.y += breathOffset;
+    }
+
+    // Set the final position
+    gl_Position = ProjMat * ModelViewMat * vec4(animatedPosition, 1.0);
 
     vec4 col = texture(Sampler0, UV0);
     marker = col.rgb == vec3(76, 195, 86) / 255 ? 1.0 : 0.0;

@@ -103,5 +103,9 @@ void main() {
     color *= vertexColor * ColorModulator;
     color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
     color *= lightMapColor;
+
+    // Add dynamic lighting effect based on AttackProgress
+    color.rgb += vec3(0.2, 0.1, 0.0) * AttackProgress;
+
     fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
 }
